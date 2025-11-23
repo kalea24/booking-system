@@ -9,7 +9,7 @@ const bookingRoutes = require('./routes/bookings');
 const authRoutes = require('./routes/auth');
 
 const app = express();
-
+app.set('trust proxy', 1); // Trust first proxy (Render/Vercel)
 // Security middleware
 app.use(helmet());
 app.use(cors({
