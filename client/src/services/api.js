@@ -1,9 +1,7 @@
 import axios from 'axios';
 
-// client/src/services/api.js
 const api = axios.create({
-  // baseURL: process.env.REACT_APP_API_URL || '/api',
-  baseURL: 'https://booking-backend-ozhk.onrender.com/api', // 🔥 Temporary
+  baseURL: process.env.REACT_APP_API_URL || '/api',
 });
 
 // Add token to requests
