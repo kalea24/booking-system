@@ -1,10 +1,9 @@
 import axios from 'axios';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
-
-// Instead of hardcoding localhost
+// client/src/services/api.js
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || '/api',
+  // baseURL: process.env.REACT_APP_API_URL || '/api',
+  baseURL: 'https://booking-backend-ozhk.onrender.com/api', // 🔥 Temporary
 });
 
 // Add token to requests
