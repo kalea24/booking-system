@@ -1,23 +1,12 @@
 // server/controllers/authController.js
 const Owner = require('../models/Owner');
 const jwt = require('jsonwebtoken');
-const nodemailer = require('nodemailer');
+const sgMail = require('@sendgrid/mail');
 
-// Email transporter (uses Gmail with explicit SMTP settings for Render)
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_APP_PASSWORD
-  },
-  tls: {
-    rejectUnauthorized: false
-  }
-});
+// ✅ Set SendGrid API key
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-// Get allowed emails from .env (split by comma)
+// Get allowed emails from .env
 const ALLOWED_OWNER_EMAILS = process.env.ALLOWED_OWNER_EMAILS
   ? process.env.ALLOWED_OWNER_EMAILS.split(',').map(email => email.trim())
   : [];
@@ -27,7 +16,7 @@ const generateOTP = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
 };
 
-// Send OTP via email
+// Send OTP via SendGrid
 exports.sendOTP = async (req, res) => {
   try {
     const { email } = req.body;
@@ -57,23 +46,25 @@ exports.sendOTP = async (req, res) => {
     };
     await owner.save();
     
-    // ✅ Send OTP via email
-    await transporter.sendMail({
-      from: `"Booking System" <${process.env.EMAIL_USER}>`,
+    // ✅ Send OTP via SendGrid
+    const msg = {
       to: email,
+      from: process.env.SENDGRID_FROM_EMAIL, // Must be verified sender
       subject: 'Your Booking System OTP Code',
-      text: `Your OTP code is: ${otp}\n\nThis code expires in 10 minutes.`
-    });
+      text: `Your OTP code is: ${otp}\n\nThis code expires in 10 minutes.`,
+      html: `<p>Your OTP code is: <strong>${otp}</strong></p><p>This code expires in 10 minutes.</p>`
+    };
     
+    await sgMail.send(msg);
     res.json({ message: 'OTP sent to your email' });
     
   } catch (error) {
-    console.error('Email OTP error:', error);
+    console.error('SendGrid error:', error.response?.body || error.message);
     res.status(500).json({ message: 'Failed to send OTP. Please try again.' });
   }
 };
 
-// Verify OTP (same as before, but with email)
+// Verify OTP (same as before)
 exports.verifyOTP = async (req, res) => {
   try {
     const { email, otp } = req.body;
