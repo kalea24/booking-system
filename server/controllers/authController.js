@@ -3,12 +3,17 @@ const Owner = require('../models/Owner');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 
-// Email transporter (uses Gmail)
+// Email transporter (uses Gmail with explicit SMTP settings for Render)
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: 'smtp.gmail.com',
+  port: 587,
+  secure: false,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_APP_PASSWORD
+  },
+  tls: {
+    rejectUnauthorized: false
   }
 });
 
