@@ -1,26 +1,13 @@
+// server/models/Owner.js
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
 
 const ownerSchema = new mongoose.Schema({
-  phone: {
-    type: String,
-    required: true,
-    unique: true
-  },
+  email: { type: String, required: true, unique: true },
   otp: {
     code: String,
     expiresAt: Date
   },
-  gcashNumber: {
-    type: String,
-    default: '09123456789'
-  },
-  gcashQR: {
-    type: String, // URL to QR code image
-    default: ''
-  }
-}, {
-  timestamps: true
-});
+  gcashNumber: String
+}, { timestamps: true });
 
 module.exports = mongoose.model('Owner', ownerSchema);
