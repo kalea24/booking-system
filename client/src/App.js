@@ -24,7 +24,7 @@ function App() {
           <div className="max-w-7xl mx-auto px-4 py-4">
             <div className="flex justify-between items-center">
               <Link to="/" className="text-2xl font-bold text-primary">
-                🏠 Booking System
+                🏠 JMRN Happy Home
               </Link>
               <div className="space-x-4">
                 <Link
