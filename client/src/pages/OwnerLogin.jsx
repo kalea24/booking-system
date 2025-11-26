@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 
 export default function OwnerLogin({ onLoginSuccess }) {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -15,14 +16,15 @@ export default function OwnerLogin({ onLoginSuccess }) {
     setError('');
 
     try {
-      const response = await api.post('/auth/login', { password });
+      // ✅ Send both email and password
+      const response = await api.post('/auth/login', { email, password });
       const { token } = response.data;
 
       localStorage.setItem('ownerToken', token);
       onLoginSuccess();
       navigate('/owner');
     } catch (err) {
-      setError(err.response?.data?.message || 'Invalid password');
+      setError(err.response?.data?.message || 'Invalid email or password');
     } finally {
       setLoading(false);
     }
@@ -34,24 +36,45 @@ export default function OwnerLogin({ onLoginSuccess }) {
       {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
       
       <form onSubmit={handleSubmit}>
+        {/* Email Field */}
+        <div className="mb-4">
+          <label className="block mb-2 text-gray-700">Email Address</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            placeholder="your-email@gmail.com"
+            required
+          />
+        </div>
+        
+        {/* Password Field */}
         <div className="mb-4">
           <label className="block mb-2 text-gray-700">Password</label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder="Enter your password"
             required
           />
         </div>
+        
+        {/* Login Button */}
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 font-medium"
+          className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 font-medium transition"
         >
           {loading ? 'Logging in...' : 'Login'}
         </button>
+        
+        {/* Help Text */}
+        <p className="text-sm text-gray-500 mt-4 text-center">
+          Contact the administrator if you need access.
+        </p>
       </form>
     </div>
   );
