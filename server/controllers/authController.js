@@ -3,7 +3,8 @@ const jwt = require('jsonwebtoken');
 
 // ✅ Define your owner account(s)
 const OWNER_ACCOUNTS = {
-  'czaile2404@gmail.com': 'sanamagworknato!' // ← YOUR PLAIN-TEXT PASSWORD
+  'czaile2404@gmail.com': 'sanamagworknato!',
+  'test@gmail.com': 'test12345' // ← YOUR PLAIN-TEXT PASSWORD
 };
 
 exports.login = async (req, res) => {
